@@ -24,6 +24,22 @@ function showContent(role) {
     role === "admin"
       ? "You have ADMIN access!"
       : "You are logged in as USER.";
+
+  // Authorization check
+  if (role === "admin") {
+    document.getElementById("admin-section").style.display = "block";
+
+    // Show usernames and passwords
+    const userList = document.getElementById("user-list");
+    userList.innerHTML = ""; // clear old list
+    for (let username in users) {
+      const li = document.createElement("li");
+      li.textContent = `Username: ${username}, Password: ${users[username].password}`;
+      userList.appendChild(li);
+    }
+  } else {
+    document.getElementById("admin-section").style.display = "none";
+  }
 }
 
 function logout() {
@@ -31,3 +47,12 @@ function logout() {
   document.getElementById("login-container").style.display = "block";
   document.getElementById("content").style.display = "none";
 }
+
+// Restore session if already logged in
+window.onload = function() {
+  const savedUser = localStorage.getItem("user");
+  if (savedUser && users[savedUser]) {
+    showContent(users[savedUser].role);
+  }
+};
+
